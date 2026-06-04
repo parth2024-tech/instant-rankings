@@ -290,5 +290,21 @@ document.getElementById('vol-rain').addEventListener('input', (e) => {
     }
 });
 
+// Theme Selection Control
+const themeButtons = document.querySelectorAll('.theme-btn');
+themeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        themeButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Remove existing theme classes from body
+        document.body.className = '';
+        
+        // Apply new theme
+        const newTheme = `theme-${btn.dataset.theme}`;
+        document.body.classList.add(newTheme);
+    });
+});
+
 // Initial draw
 updateDisplay();
