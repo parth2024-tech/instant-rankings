@@ -68,7 +68,7 @@ function startTimer() {
             timerInterval = null;
             isRunning = false;
             playAlarmSound();
-            alertSessionCompleted();
+            logSession();
             resetTimer();
         }
     }, 1000);
@@ -103,10 +103,78 @@ function switchMode(newMode) {
     resetTimer();
 }
 
-function alertSessionCompleted() {
-    // Basic browser notifier hook (to be expanded in dashboard)
-    console.log("Session completed!");
+function logSession() {
+    const sessionDate = new Date();
+    const formattedTime = sessionDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const formattedDate = sessionDate.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    
+    const label = TIMER_MODES[currentMode].label;
+    const durationMins = Math.round(TIMER_MODES[currentMode].duration / 60);
+
+    const logEntry = {
+        mode: currentMode,
+        label: label,
+        duration: durationMins,
+        time: formattedTime,
+        date: formattedDate,
+        timestamp: sessionDate.getTime()
+    };
+
+    // Save to LocalStorage
+    let logs = JSON.parse(localStorage.getItem('zenfocus_logs') || '[]');
+    logs.unshift(logEntry);
+    localStorage.setItem('zenfocus_logs', JSON.stringify(logs));
+
+    // Update statistics computations
+    updateStatsDashboard();
 }
+
+function updateStatsDashboard() {
+    const logs = JSON.parse(localStorage.getItem('zenfocus_logs') || '[]');
+    
+    // Total sessions
+    const totalSessions = logs.length;
+    document.getElementById('stat-total-sessions').textContent = totalSessions;
+
+    // Total focus duration
+    const totalDuration = logs.reduce((sum, item) => sum + (item.mode === 'focus' ? item.duration : 0), 0);
+    document.getElementById('stat-focus-time').textContent = `${totalDuration}m`;
+
+    // Streak calculation
+    let streak = 0;
+    if (logs.length > 0) {
+        const uniqueDays = new Set(logs.map(item => item.date));
+        streak = uniqueDays.size;
+    }
+    document.getElementById('stat-streak').textContent = streak;
+
+    // Render list
+    const historyList = document.getElementById('history-list');
+    historyList.innerHTML = '';
+
+    if (logs.length === 0) {
+        historyList.innerHTML = '<li class="empty-state">No focus logs recorded yet. Start a session to log stats!</li>';
+    } else {
+        logs.slice(0, 5).forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'history-item';
+            
+            // Emoji indicator
+            const emoji = item.mode === 'focus' ? '🎯' : '☕';
+            
+            li.innerHTML = `
+                <span>${emoji} ${item.label} (${item.duration}m)</span>
+                <span class="history-time">${item.date}, ${item.time}</span>
+            `;
+            historyList.appendChild(li);
+        });
+    }
+}
+
+// Trigger initial load of stats
+document.addEventListener('DOMContentLoaded', updateStatsDashboard);
+updateStatsDashboard();
+
 
 // Audio Synthesizers using Web Audio API
 function initAudioContext() {
