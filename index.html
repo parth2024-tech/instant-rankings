@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenFocus Station</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body class="theme-aurora">
+    <div class="glass-bg"></div>
+    <div class="ambient-glow"></div>
+
+    <header class="app-header">
+        <div class="logo">
+            <span class="logo-icon">🧘</span>
+            <h1>ZenFocus Station</h1>
+        </div>
+        <div class="theme-selector">
+            <button class="theme-btn active" data-theme="aurora" title="Aurora Glow">Aurora</button>
+            <button class="theme-btn" data-theme="sunset" title="Sunset Aura">Sunset</button>
+            <button class="theme-btn" data-theme="forest" title="Forest Mist">Forest</button>
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        <!-- Main Timer Card -->
+        <section class="card timer-card glass-panel">
+            <div class="timer-nav">
+                <button class="timer-mode-btn active" data-mode="focus">Focus</button>
+                <button class="timer-mode-btn" data-mode="short-break">Short Break</button>
+                <button class="timer-mode-btn" data-mode="long-break">Long Break</button>
+            </div>
+            
+            <div class="timer-display-container">
+                <svg class="progress-ring" width="280" height="280">
+                    <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.06)" stroke-width="8" fill="transparent" r="120" cx="140" cy="140" />
+                    <circle class="progress-ring__circle" stroke="url(#timer-gradient)" stroke-width="8" fill="transparent" r="120" cx="140" cy="140" stroke-dasharray="753.98" stroke-dashoffset="0" />
+                    <defs>
+                        <linearGradient id="timer-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="var(--accent-glow-primary)" />
+                            <stop offset="100%" stop-color="var(--accent-glow-secondary)" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="timer-text">
+                    <span id="time-left">25:00</span>
+                    <span id="timer-label" class="subtext">Deep Work</span>
+                </div>
+            </div>
+
+            <div class="timer-controls">
+                <button id="toggle-timer" class="btn btn-primary btn-glow">Start Session</button>
+                <button id="reset-timer" class="btn btn-secondary" title="Reset Session">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- Right Panels Side Grid -->
+        <div class="side-panel-grid">
+            <!-- Sound Scape Ambient Card -->
+            <section class="card ambient-card glass-panel">
+                <h2>Ambient Soundscape</h2>
+                <p class="subtext">Immerse yourself in background sounds to boost focus.</p>
+                <div class="ambient-controls">
+                    <div class="sound-row">
+                        <span class="sound-label">White Noise</span>
+                        <input type="range" class="sound-slider" id="vol-noise" min="0" max="100" value="0">
+                    </div>
+                    <div class="sound-row">
+                        <span class="sound-label">Zen Rain</span>
+                        <input type="range" class="sound-slider" id="vol-rain" min="0" max="100" value="0">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats/History Card -->
+            <section class="card stats-card glass-panel">
+                <h2>Focus Dashboard</h2>
+                <div class="stats-overview">
+                    <div class="stat-box">
+                        <span class="stat-val" id="stat-total-sessions">0</span>
+                        <span class="stat-lbl">Sessions</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-val" id="stat-focus-time">0m</span>
+                        <span class="stat-lbl">Minutes Focus</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-val" id="stat-streak">0</span>
+                        <span class="stat-lbl">Daily Streak</span>
+                    </div>
+                </div>
+                
+                <div class="history-list-container">
+                    <h3>Recent Focus Logs</h3>
+                    <ul id="history-list" class="history-list">
+                        <!-- Dynamically populated -->
+                        <li class="empty-state">No focus logs recorded yet. Start a session to log stats!</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="app-footer-bar">
+        <p>Crafted for distraction-free execution. State-of-the-Art Focus Console.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
