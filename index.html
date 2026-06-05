@@ -101,7 +101,19 @@
                         <!-- Dynamically populated -->
                         <li class="empty-state">No focus logs recorded yet. Start a session to log stats!</li>
                     </ul>
-                </div>
+            </section>
+
+            <!-- Tasks Card -->
+            <section class="card tasks-card glass-panel">
+                <h2>Focus Objectives</h2>
+                <p class="subtext">Track and select what you are actively working on.</p>
+                <form id="todo-form" class="todo-form">
+                    <input type="text" id="todo-input" placeholder="Add a focus objective..." required autocomplete="off">
+                    <button type="submit" class="btn btn-todo-add">+</button>
+                </form>
+                <ul id="todo-list" class="todo-list">
+                    <li class="empty-state">No focus objectives set yet. Add one above!</li>
+                </ul>
             </section>
         </div>
     </main>

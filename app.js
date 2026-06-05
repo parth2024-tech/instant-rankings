@@ -25,6 +25,12 @@ const resetBtn = document.getElementById('reset-timer');
 const progressCircle = document.querySelector('.progress-ring__circle');
 const modeButtons = document.querySelectorAll('.timer-mode-btn');
 
+// Todo State & Elements
+let selectedTodoId = null;
+const todoForm = document.getElementById('todo-form');
+const todoInput = document.getElementById('todo-input');
+const todoList = document.getElementById('todo-list');
+
 // Progress Circle Setup
 const radius = progressCircle.r.baseVal.value;
 const circumference = radius * 2 * Math.PI;
@@ -108,7 +114,14 @@ function logSession() {
     const formattedTime = sessionDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const formattedDate = sessionDate.toLocaleDateString([], { month: 'short', day: 'numeric' });
     
-    const label = TIMER_MODES[currentMode].label;
+    let label = TIMER_MODES[currentMode].label;
+    if (currentMode === 'focus' && selectedTodoId) {
+        const todos = JSON.parse(localStorage.getItem('zenfocus_todos') || '[]');
+        const activeTodo = todos.find(t => t.id === selectedTodoId);
+        if (activeTodo) {
+            label = `Focus: ${activeTodo.text}`;
+        }
+    }
     const durationMins = Math.round(TIMER_MODES[currentMode].duration / 60);
 
     const logEntry = {
@@ -305,6 +318,87 @@ themeButtons.forEach(btn => {
         document.body.classList.add(newTheme);
     });
 });
+
+// Focus Objectives Functions
+function renderTodos() {
+    const todos = JSON.parse(localStorage.getItem('zenfocus_todos') || '[]');
+    todoList.innerHTML = '';
+    
+    if (todos.length === 0) {
+        todoList.innerHTML = '<li class="empty-state">No focus objectives set yet. Add one above!</li>';
+        selectedTodoId = null;
+        return;
+    }
+
+    todos.forEach(todo => {
+        const li = document.createElement('li');
+        li.className = `todo-item ${todo.id === selectedTodoId ? 'active-focus' : ''} ${todo.completed ? 'completed' : ''}`;
+        li.dataset.id = todo.id;
+        
+        li.innerHTML = `
+            <div class="todo-checkbox-container">
+                <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}>
+                <span class="todo-text">${todo.text}</span>
+            </div>
+            <button class="btn-todo-delete" title="Delete Task">&times;</button>
+        `;
+
+        // Click on row to set as active focus task
+        li.addEventListener('click', (e) => {
+            if (e.target.classList.contains('todo-checkbox') || e.target.classList.contains('btn-todo-delete')) {
+                return;
+            }
+            if (todo.completed) return; // Cannot focus completed items
+            selectedTodoId = (selectedTodoId === todo.id) ? null : todo.id;
+            renderTodos();
+        });
+
+        // Checkbox complete event
+        li.querySelector('.todo-checkbox').addEventListener('change', (e) => {
+            todo.completed = e.target.checked;
+            if (todo.completed && selectedTodoId === todo.id) {
+                selectedTodoId = null;
+            }
+            localStorage.setItem('zenfocus_todos', JSON.stringify(todos));
+            renderTodos();
+        });
+
+        // Delete button event
+        li.querySelector('.btn-todo-delete').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const filtered = todos.filter(t => t.id !== todo.id);
+            if (selectedTodoId === todo.id) {
+                selectedTodoId = null;
+            }
+            localStorage.setItem('zenfocus_todos', JSON.stringify(filtered));
+            renderTodos();
+        });
+
+        todoList.appendChild(li);
+    });
+}
+
+todoForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = todoInput.value.trim();
+    if (!text) return;
+
+    const newTodo = {
+        id: Date.now().toString(),
+        text: text,
+        completed: false
+    };
+
+    const todos = JSON.parse(localStorage.getItem('zenfocus_todos') || '[]');
+    todos.push(newTodo);
+    localStorage.setItem('zenfocus_todos', JSON.stringify(todos));
+
+    todoInput.value = '';
+    renderTodos();
+});
+
+// Load todos initially
+renderTodos();
 
 // Initial draw
 updateDisplay();
