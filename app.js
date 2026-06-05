@@ -480,5 +480,25 @@ inputBreak.addEventListener('change', (e) => {
     }
 });
 
+// Keyboard Shortcuts Listener
+document.addEventListener('keydown', (e) => {
+    // Avoid triggering when user is typing in inputs
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+    }
+    
+    if (e.code === 'Space') {
+        e.preventDefault();
+        if (isRunning) {
+            pauseTimer();
+        } else {
+            startTimer();
+        }
+    } else if (e.code === 'Escape') {
+        e.preventDefault();
+        resetTimer();
+    }
+});
+
 // Initial draw
 updateDisplay();

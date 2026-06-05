@@ -6,12 +6,19 @@ ZenFocus Station is a state-of-the-art, premium productivity dashboard. It is en
 
 - **Circular Progress Timer**: Highly customizable timers for Focus, Short Breaks, and Long Breaks.
 - **Glassmorphic Layout**: Harmonious HSL colors and blur backdrops matching a modern dark profile aesthetic.
-- **Synthesized Ambient Sounds**: Fully browser-generated audio feeds (Rain and White Noise) built using the Web Audio API without any external dependencies.
+- **Synthesized Ambient Sounds**: Fully browser-generated audio feeds (Rain, White Noise, and **Forest Wind Chimes**) built using the Web Audio API without any external dependencies.
+- **Interactive Focus Objectives**: Set a list of priorities, mark them complete, and automatically link the active focus task to your productivity logs.
+- **Custom Duration Setting Drawer**: Change default session times (1m to 180m) on-the-fly.
 - **Dynamic Themes**: Instant toggle between:
   - 🌌 **Aurora** (Neon indigo & purple)
   - 🌅 **Sunset** (Rosy orange & red aura)
   - 🌲 **Forest** (Emerald & teal mist)
 - **Analytics Dashboard**: Interactive logging of streak counts, sessions totals, and cumulative session durations.
+
+## Keyboard Controls
+
+- `Spacebar`: Play / Pause the focus countdown.
+- `Escape`: Reset the active session timer.
 
 ## Development & Usage
 
