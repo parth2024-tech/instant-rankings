@@ -400,5 +400,36 @@ todoForm.addEventListener('submit', (e) => {
 // Load todos initially
 renderTodos();
 
+// Timer Duration Settings Drawer Toggle
+const settingsToggleBtn = document.getElementById('settings-toggle');
+const settingsDrawer = document.getElementById('settings-drawer');
+const inputFocus = document.getElementById('input-focus');
+const inputBreak = document.getElementById('input-break');
+
+settingsToggleBtn.addEventListener('click', () => {
+    settingsDrawer.classList.toggle('hidden');
+});
+
+// Update duration configuration
+inputFocus.addEventListener('change', (e) => {
+    const val = parseInt(e.target.value);
+    if (val >= 1 && val <= 180) {
+        TIMER_MODES.focus.duration = val * 60;
+        if (currentMode === 'focus' && !isRunning) {
+            resetTimer();
+        }
+    }
+});
+
+inputBreak.addEventListener('change', (e) => {
+    const val = parseInt(e.target.value);
+    if (val >= 1 && val <= 60) {
+        TIMER_MODES['short-break'].duration = val * 60;
+        if (currentMode === 'short-break' && !isRunning) {
+            resetTimer();
+        }
+    }
+});
+
 // Initial draw
 updateDisplay();

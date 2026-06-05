@@ -51,6 +51,20 @@
                 </div>
             </div>
 
+            <div class="timer-settings">
+                <button class="settings-toggle-btn" id="settings-toggle">⚙️ Customize Durations</button>
+                <div class="settings-drawer hidden" id="settings-drawer">
+                    <div class="settings-field">
+                        <label>Focus (m):</label>
+                        <input type="number" id="input-focus" min="1" max="180" value="25">
+                    </div>
+                    <div class="settings-field">
+                        <label>Break (m):</label>
+                        <input type="number" id="input-break" min="1" max="60" value="5">
+                    </div>
+                </div>
+            </div>
+
             <div class="timer-controls">
                 <button id="toggle-timer" class="btn btn-primary btn-glow">Start Session</button>
                 <button id="reset-timer" class="btn btn-secondary" title="Reset Session">
