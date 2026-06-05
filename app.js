@@ -16,6 +16,9 @@ let noiseNode = null;
 let rainNode = null;
 let gainNoise = null;
 let gainRain = null;
+let gainChimes = null;
+let chimesVolume = 0;
+let chimesInterval = null;
 
 // DOM Elements
 const timeLeftEl = document.getElementById('time-left');
@@ -213,6 +216,41 @@ function initAudioContext() {
         gainRain.connect(audioCtx.destination);
         rainNode.start();
     }
+
+    // Setup chimes gain node & scheduler
+    gainChimes = audioCtx.createGain();
+    gainChimes.gain.value = chimesVolume;
+    gainChimes.connect(audioCtx.destination);
+    startChimesScheduler();
+}
+
+function startChimesScheduler() {
+    if (chimesInterval) return;
+    chimesInterval = setInterval(() => {
+        if (chimesVolume > 0 && Math.random() > 0.4) {
+            playSingleChime();
+        }
+    }, 3000);
+}
+
+function playSingleChime() {
+    if (!audioCtx || chimesVolume === 0) return;
+    const frequencies = [2000, 2400, 2800, 3100, 3600];
+    const freq = frequencies[Math.floor(Math.random() * frequencies.length)];
+    const osc = audioCtx.createOscillator();
+    const chimeGain = audioCtx.createGain();
+    
+    osc.connect(chimeGain);
+    chimeGain.connect(gainChimes);
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    chimeGain.gain.setValueAtTime(0, audioCtx.currentTime);
+    chimeGain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
+    chimeGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 3.0);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 3.1);
 }
 
 function createWhiteNoiseNode() {
@@ -300,6 +338,17 @@ document.getElementById('vol-rain').addEventListener('input', (e) => {
     const val = parseFloat(e.target.value) / 100;
     if (gainRain) {
         gainRain.gain.setValueAtTime(val * 0.25, audioCtx.currentTime);
+    }
+});
+
+document.getElementById('vol-chimes').addEventListener('input', (e) => {
+    initAudioContext();
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    chimesVolume = parseFloat(e.target.value) / 100;
+    if (gainChimes) {
+        gainChimes.gain.setValueAtTime(chimesVolume, audioCtx.currentTime);
     }
 });
 
